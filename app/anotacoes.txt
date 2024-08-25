@@ -67,3 +67,73 @@ Aqui na Alura, temos uma formação de entrada sobre esses tópicos chamada Form
 
 ========================================================
 
+Instalação da biblioteca
+Essa documentação é semelhante à que vimos para a biblioteca com o modelo comum, mas contém códigos específicos para modelos customizados. Vamos procurar a seção "Antes de Começar", que descreve como instalar essa biblioteca, cujo processo é semelhante ao que já fizemos anteriormente. Vamos copiar a linha implementation 'com.google.mlkit:image-labeling-custom:17.0.2'.
+
+Agora, abriremos nosso projeto no Android Studio e localizaremos o arquivo build.gradle.kts do módulo app. Na linha 87, abaixo da implementação existente, colaremos a linha copiada, substituindo as aspas simples por aspas duplas e envolvendo o trecho entre parênteses.
+
+implementation ("com.google.mlkit:image-labeling-custom:17.0.2")
+Copiar código
+Em seguida, pressionaremos "Alt + Enter" e selecionaremos a opção "Replace with new library catalog...". Feito isso, sincronizamos o projeto clicando em "Sync Now", na barra superior que surgiu, e aguardamos a conclusão do processo de sincronização.
+
+Extraindo e inserindo os arquivos do modelo
+Nosso projeto já fez o download da dependência, agora precisamos inserir esse modelo no nosso projeto para utilizá-lo no código. Vamos começar extraindo os arquivos do arquivo zip que baixamos do Teachable Machine. Ao clicar com o botão direito do mouse no arquivo no gerenciador de arquivos, selecionaremos a opção "Extrair Tudo". Isso nos fornecerá os arquivos labels.txt e model.tflite.
+
+Vamos copiar esses dois arquivos e colá-los no diretório raiz do nosso projeto no Android Studio. Para isso, selecionamos o diretório no menu lateral do Android Studio, clicamos com o botão direito do mouse e vamos em "New" > "Folder" > "Assets Folder" para criar uma nova pasta chamada "assets". Em seguida, essa pasta aparecerá no menu lateral, então basta selecioná-la e usar o atalho "Ctrl + V" para colar os arquivos. Ao fazer isso, um dos arquivos é automaticamente aberto.
+
+Note que no arquivo labels.txt temos os rótulos que criamos no Teachable Machine:
+
+0 Android
+1 Maça
+2 Caneca Comum
+3 Caneca Alura
+Copiar código
+Ao clicar no arquivo model.tflite, que se trata do modelo em si, não temos nenhuma informação relevante.
+
+Configurando o ImageClassifier:
+Com os arquivos dentro do projeto, podemos fazer algumas alterações no código de ImageClassifier.kt. Primeiramente, vamos substituir o uso do labeler padrão pelo nosso novo modelo. No método classifyImage, na linha 26, criaremos uma variável customModel, que receberá uma instância de LocalModel.Builder(). Neste momento, é importante teclar "Alt + Enter" sobre LocalModel e importá-lo.
+
+val customModel = LocalModel.Builder()
+Copiar código
+Na linha seguinte, passaremos .setAssetFilePath(), com o caminho do nosso modelo. Uma vez que armazenamos o modelo em uma pasta específica para recursos do projeto, a assets, podemos simplesmente passar seu nome dentro da string: "model.tflite". Como estamos lidando com um Builder, podemos finalizar com .build().
+
+val customModel = LocalModel.Builder()
+    .setAssetFilePath("model.tflite")
+    .build()
+Copiar código
+Agora, precisamos passar esse modelo com algumas opções para realizar a análise. Então, vamos criar uma variável chamada customOptions, que será do tipo CustomImageLabelerOptions. Ela também é um builder, então vamos adicionar .Builder() e passar customModel.
+
+val customOptions = CustomImageLabelerOptions.Builder(customModel)
+Copiar código
+Na linha seguinte, vamos adicionar o parâmetro de confiança .setConfidenceThreshold(). Por padrão, ele sugere 0.7, mas, por enquanto, vamos definir como 0.2f. Lembre-se que o f é usado para indicar que é um valor float.
+
+Temos a opção de adicionar mais um parâmetro que é a quantidade máxima de rótulos que o modelo vai retornar, mas para esse primeiro teste não faremos isso. Vamos apenas adicionar .build() para finalizar a construção das opções.
+
+val customOptions = CustomImageLabelerOptions.Builder(customModel)
+    .setConfidenceThreshold(0.2f)
+    .build()
+Copiar código
+Agora que as customOptions estão prontas, podemos substituir as opções padrão, que estão no método .getClient(), por customOptions.
+
+val labeler = ImageLabeling.getClient(customOptions)
+Copiar código
+Executando e analisando o resultado
+Se rodarmos o nosso aplicativo, vamos notar pelo menos uma diferença, então vamos pressionar "Shift + F10".
+
+Nosso aplicativo rodou e aqui há um detalhe: como adicionamos uma nova biblioteca, o projeto agora tem alguns arquivos adicionais para ler. Esse primeiro build, após as adições, pode demorar um pouco mais, mas depois ele voltará à mesma velocidade de antes.
+
+Agora vamos verificar se ele conseguiu identificar as imagens com base no nosso modelo personalizado. Ao clicar na maçã, não está mostrando nada. Ao clicar na foto do Android, que testamos e vimos que funcionou no Teachable Machine, também não veremos nada.
+
+No entanto, ao voltarmos ao Android Studio e observarmos o Logcat, podemos notar que, pelo menos lá, essas informações estão aparecendo:
+
+0.99689375
+
+0.99609375
+
+0.97265625
+
+0.859375
+
+Embora não mostre corretamente o rótulo, pois está exibindo um espaço em branco, ele é capaz de fornecer algumas porcentagens, como 99%, 97% e 85%. Isso indica que o modelo está funcionando, mas ainda não consegue nos fornecer o nome de cada rótulo. Existem algumas maneiras de resolvermos esse problema, e é isso que vamos explorar a seguir.
+
+=====================================

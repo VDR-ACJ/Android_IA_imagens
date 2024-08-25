@@ -3,8 +3,10 @@ package com.br.alura.galeria.mlkit
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.label.ImageLabeling
+import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import javax.inject.Inject
 
@@ -21,15 +23,30 @@ class ImageClassifier @Inject constructor(private val context: Context) {
         val options = ImageLabelerOptions.Builder()
             .setConfidenceThreshold(0.7f)
             .build()
-        val labeler = ImageLabeling.getClient(options)
+
+
+        val customModel = LocalModel.Builder()
+            .setAssetFilePath("model.tflite").build()
+
+        val customOptions = CustomImageLabelerOptions.Builder(customModel)
+            .setConfidenceThreshold(0.2f)
+            .build()
+
+        val labeler = ImageLabeling.getClient(customOptions)
+        //val labeler = ImageLabeling.getClient(options)
         //val labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
 
         labeler.process(image).addOnSuccessListener { labels ->
+
+            val newLabels = context.resources.assets.open("labels.txt")
+                .bufferedReader()
+                .readLines()
+
             labels.forEach {
-                val labelAndConfidence = "${it.text} - ${it.confidence}"
+                val labelAndConfidence = "${newLabels[it.index].substring(2)} - ${it.confidence}"
                 Log.d("ImageDetailScreen", labelAndConfidence)
             }
-            onSucess(labels.map { it.text })
+            onSucess(labels.map {newLabels[it.index].substring(2)})
 
         }.addOnFailureListener { onFail() }
     }

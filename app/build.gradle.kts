@@ -83,4 +83,5 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
     implementation (libs.image.labeling)
+    implementation (libs.image.labeling.custom)
 }
