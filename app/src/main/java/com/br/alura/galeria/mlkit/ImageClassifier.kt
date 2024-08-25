@@ -20,13 +20,13 @@ class ImageClassifier @Inject constructor(private val context: Context) {
     ) {
         val image = InputImage.fromFilePath(context, Uri.parse(imageUri))
 
-        val options = ImageLabelerOptions.Builder()
+        /*val options = ImageLabelerOptions.Builder()
             .setConfidenceThreshold(0.7f)
-            .build()
+            .build()*/
 
 
         val customModel = LocalModel.Builder()
-            .setAssetFilePath("model.tflite").build()
+            .setAssetFilePath("custom_model_73_epoch.tflite").build()
 
         val customOptions = CustomImageLabelerOptions.Builder(customModel)
             .setConfidenceThreshold(0.2f)
@@ -38,17 +38,20 @@ class ImageClassifier @Inject constructor(private val context: Context) {
 
         labeler.process(image).addOnSuccessListener { labels ->
 
-            val newLabels = context.resources.assets.open("labels.txt")
+            /*val newLabels = context.resources.assets.open("labels.txt")
                 .bufferedReader()
-                .readLines()
+                .readLines()*/
 
             labels.forEach {
-                val labelAndConfidence = "${newLabels[it.index].substring(2)} - ${it.confidence}"
+                val labelAndConfidence = "${it.text.substring(2)} - ${it.confidence}"
                 Log.d("ImageDetailScreen", labelAndConfidence)
             }
-            onSucess(labels.map {newLabels[it.index].substring(2)})
+            onSucess(labels.map {it.text.substring(2)})
 
         }.addOnFailureListener { onFail() }
+            .addOnCompleteListener{
+                labeler.close()
+            }
     }
     /*
         Essa abordagem garante que, no caso de sucesso da análise, todas operações assíncronas devem ser concluídas antes que imageUriManager.setImageWithLabels(imagesWithLabels) seja chamado. Para isso, utilizamos o método awaitAll() em alguns objetos Deferred

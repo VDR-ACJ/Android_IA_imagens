@@ -137,3 +137,103 @@ No entanto, ao voltarmos ao Android Studio e observarmos o Logcat, podemos notar
 Embora não mostre corretamente o rótulo, pois está exibindo um espaço em branco, ele é capaz de fornecer algumas porcentagens, como 99%, 97% e 85%. Isso indica que o modelo está funcionando, mas ainda não consegue nos fornecer o nome de cada rótulo. Existem algumas maneiras de resolvermos esse problema, e é isso que vamos explorar a seguir.
 
 =====================================
+
+Entendendo a segunda abordagem
+Quando abrimos o arquivo model.tflite, aparece um aviso informando que não há metadados disponíveis no modelo e podemos clicar em "Add metadata to your model". Ao clicar, será aberta uma documentação fornecida pelo próprio TensorFlow, que é uma tecnologia desenvolvida pela equipe do Google e amplamente utilizada em vários aplicativos da empresa.
+
+Esta documentação fornece uma explicação mais detalhada sobre por que os arquivos estão separados, como podemos juntá-los e outros detalhes relevantes. Ela inclui até mesmo uma imagem ilustrativa mostrando a separação do modelo do TensorFlow e dos metadados associados a ele. No nosso caso, este metadados são os rótulos contidos no arquivo labels.txt.
+
+Além disso, a documentação menciona um site do Google onde podemos combinar esses dois arquivos. Podemos acessá-lo através da página de metadados do TensorFlow Lite.
+
+Ao clicar no link, uma nova documentação é aberta. Note que temos a opção tanto de executar esse código localmente por questões de privacidade, se preferirmos, quanto de usar o "Run in Google Colab" fornecido pelo Google. Esse é essencialmente um ambiente virtual pré-configurado com tudo o que precisamos para realizar a junção dos arquivos. Podemos acessá-lo remotamente, enviar nossos arquivos, executar as etapas necessárias, baixar o resultado e, em seguida, tudo será excluído.
+
+A documentação também detalha quais recursos estarão disponíveis nesse ambiente virtual, mas podemos simplesmente clicar em "Run in Google Colab" para iniciar o processo.
+
+Implementando a abordagem no Google Colab
+Ao clicarmos nessa opção, o Google Colab será carregado. A primeira opção, localizada na seção "Create Model Metadata for Task Library and Codegen", é a que precisamos. Antes dela, temos a seção "Prerequisites", com a célula de código pip install tf.lite-support.nightly. Ao lado desse texto, há um pequeno botão semelhante a um botão de reprodução. Clicamos nele e aguardamos a instalação dessa biblioteca, que será necessária para começarmos a combinar nossos dois arquivos.
+
+Esse processo pode levar algum tempo, dependendo da velocidade da sua conexão com a internet. Se tudo funcionar corretamente, aparecerá um símbolo verde de verificação à esquerda da célula. Em caso de erro, você pode clicar novamente no botão de reprodução e ele deverá executar o comando novamente.
+
+Agora, na seção seguinte, precisaremos fazer a importação de algumas coisas dessa biblioteca. Vamos executar a célula de "Step 1", onde temos a importação de alguns pacotes requeridos.
+
+from tflite_support.metadata_writers import image_classifier
+from tflite_support.metadata_writers import writer_utils
+Copiar código
+Caso você queira entender mais sobre o Google Colab, há material disponível na plataforma da Alura.
+
+Após a execução, temos o "Step 2", mas não precisamos executá-lo porque ele faria o download de um modelo de teste do próprio Google para mostrar como isso funciona. Então passemos para o "Step 3".
+
+Na célula do terceiro passo, há alguns códigos onde precisamos alterar o caminho do modelo que queremos utilizar. Dentro desse código, vamos precisar arrastar nossos dois arquivos, labels.txt e model.tflite, que contém os rótulos e o modelo em si, respectivamente.
+
+Vamos abrir a pasta onde consta esses arquivos, selecioná-los e arrastálos para a seção de arquivos do Google Colab. Ao fazer isso, aparecerá um aviso informando que, após serem utilizados, esses arquivos serão excluídos. Vamos confirmar clicando em "OK".
+
+Agora, precisamos alterar o código do "Step 3". Em _MODEL_PATH, vamos passar "model.tflite", que é o nome do nosso arquivo de modelo. Em _LABEL_FILE, vamos passar "labels.txt", que é o nome do nosso arquivo de rótulos. Em _SAVE_TO_PATH, podemos passar um nome de nossa preferência. Nesse caso, optaremos por "custom-model.tflite".
+
+ImageClassifierWriter = image_classifier.Metadatawriter
+_MODEL_PATH = "model.tflite"
+_LABEL_FILE = "labels.txt"
+_SAVE_TO_PATH = "custom_model.tflite"
+Copiar código
+Em seguida, podemos clicar no botão de play para rodar essa célula e aguardar o resultado.
+
+Se não aparecer automaticamente na seção de arquivos na lateral esquerda, basta clicar na pasta com o símbolo de atualizar e deve aparecer nosso modelo completo.
+
+Depois, clicamos nos três pontinhos ao lado de custom_model.tflite e selecionamos a opção "Fazer download". Vamos optar por salválo no mesmo local de antes e o modelo será baixado já com os metadados.
+
+Importando o novo modelo
+Entendido. Agora, vamos importar esse novo modelo para o Android Studio. Para isso, copiaremos custom_model.tflite de nossa máquina e o colaremos na pasta assets dentro do Android Studio.
+
+Ao abrir o arquivo, observe que a mensagem é um pouco diferente. Ele já exibe os metadados que foram inseridos neste modelo.
+
+Fazendo as alterações necessárias
+De volta ao arquivo ImageClassifier.kt, em setAssetFilePath(), na linha 29, vamos alterar "model.tflite" para "custom_model.tflite".
+
+val customModel = LocalModel.Builder()
+    .setAssetFilePath("custom_model.tflite")
+    .build()
+Copiar código
+Há algumas linhas de código que não precisaremos mais, mas você pode mantê-las caso deseje estudar. São elas as linhas 41 a 41, onde temos a variável newLabels. Não precisamos mais ler o arquivo labels.txt, então ele não precisa continuar na pasta. Mas, se preferir, pode mantê-lo para fins de estudo.
+
+Note que surgirá um erro nas linhas 42 e 45, onde há newLabels, então podemos remover as ocorrências dessa variável. Em seguida, substituiremos it.index por it.text, tanto na linha 42, quanto na linha 45. Por enquanto, manteremos o .substring(2).
+
+labels.forEach {
+                    val labelAndConfidence = "${it.text.substring(2)} - ${it.confidence}"
+                    Log.d("ImageDetailScreen", labelAndConfidence)
+                }
+                onSuccess(labels.map { it.text.substring(2) })
+            }
+            .addOnFailureListener { onFail() }
+    }
+Copiar código
+Executando a aplicação
+Nosso código não apresenta mais nenhum erro, então podemos executar o aplicativo com "Shift + F10" e aguardar para ver o resultado.
+
+Nosso aplicativo rodou e, infelizmente, não teremos nenhuma mudança visual. Podemos perceber que, ao clicar em cada um dos arquivos, a forma como os rótulos estão sendo exibidos permanece a mesma. Mas, agora, dependendo da situação, podemos adicionar um arquivo com centenas, dezenas, ou milhares de categorias.
+
+Passamos pelo caminho difícil de ter que ler um arquivo, mas com este código e método, conseguimos algo um pouco mais performático. A seguir, faremos o ajuste para que a parte de IA funcione corretamente com esta nossa nova implementação do modelo customizado.
+
+https://www.tensorflow.org/lite/models/convert/metadata_writer_tutorial
+https://www.tensorflow.org/lite/models/convert/metadata?hl=pt-br#pack_the_associated_files
+
+Para que possamos juntar os dois arquivos referente ao modelo do Tensorflow Lite que temos hoje separados:
+
+Abra a página TensorFlow Lite Metadata Writer API e clique na opção “Run in Google Colab” na página que irá se abrir:
+
+Clique no botão de play ao lado do texto: !pip install tflite-support-nightly para que essa celular de código seja executada e aguarde.
+Localize a seção “Image classifiers” e execute o passo “Step 1: Import the required packages” aguarde a execução.
+Na célula do passo “Step 3” altere os valores das variáveis “_MODEL_PATH” e “_LABEL_FILE” para os nomes dos arquivos que vamos fazer o upload e “_SAVE_TO_PATH” para qual nome o novo arquivo do modelo deve ter.
+Fazendo upload do nosso modelo
+
+No canto esquerdo da página, localize o ícone uma pasta que deve mostrar o texto “arquivos” ao passar o mouse por cima, clique nela.
+Arraste do seu computador para essa aba de arquivos, o nosso modelo e seu arquivo de rótulos.
+Após o upload de nossos arquivos, execute a célula do passo “Step 3: Create metadata writer and populate.”, aguarde o resultado.
+Se tudo deu certo, você verá que além dos arquivos que enviamos, na aba de arquivos um novo deve ter aparecido, se não apareceu clique no icone de “atualizar” abaixo do nome “Arquivos”.
+Faça o download do arquivo gerado clicando clicando nos 3 pontinhos do canto direito dele.
+Volte ao Android e:
+
+Coloque o modelo atualizado que acabamos de baixar na pasta assets.
+Dentro da classe ImageClassifier, troque o nome do nosso modelo antigo por esse novo.
+Remova os códigos que faziam a leitura manual do arquivo “labels.txt”.
+As referências de newLabels não sejam mais necessárias, então ajuste os pontos em que ela era usada para que utilizem apenas labels comuns, como antes.
+
+========
