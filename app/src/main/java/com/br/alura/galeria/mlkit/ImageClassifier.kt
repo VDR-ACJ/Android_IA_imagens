@@ -26,7 +26,8 @@ class ImageClassifier @Inject constructor(private val context: Context) {
 
 
         val customModel = LocalModel.Builder()
-            .setAssetFilePath("custom_model_73_epoch.tflite").build()
+            .setAssetFilePath("custom_model_73_epoch.tflite")
+            .build()
 
         val customOptions = CustomImageLabelerOptions.Builder(customModel)
             .setConfidenceThreshold(0.2f)

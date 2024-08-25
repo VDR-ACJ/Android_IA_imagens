@@ -237,3 +237,21 @@ Remova os códigos que faziam a leitura manual do arquivo “labels.txt”.
 As referências de newLabels não sejam mais necessárias, então ajuste os pontos em que ela era usada para que utilizem apenas labels comuns, como antes.
 
 ========
+
+
+
+
+https://github.com/googlesamples/mlkit
+
+https://cursos.alura.com.br/extra/alura-mais/visao-computacional-com-teachable-machine-c1466?_gl=1*1k4x430*_ga*MTU5MzE5NjcwOC4xNzA0OTkyNDE2*_ga_1EPWSW3PCS*MTcwNTY4NzgzNC42LjEuMTcwNTY4Nzg4OS4wLjAuMA..*_fplc*WWt0TlBvZ0ZyQVZ4TW15c0QlMkZUYTAzakhaOFFyemFpT25iN0J1WVB0V2NuUzdxcnNnM1FRZW9lenprVWxvJTJGNzhsQjNWVmF3cEZydjcxSk9XQXZaNHdnS3U3NUVwYlRZWHl1JTJGcmdJNSUyRmJmMkRMTExhN2t1cDRmOHVmWGNUWXclM0QlM0Q.
+
+https://www.youtube.com/watch?v=CQ8iEqblWtY
+
+
+https://developers.google.com/learn/topics/on-device-ml
+
+https://www.hipsters.tech/machine-learning-hipsters-88/
+
+https://www.youtube.com/watch?v=mhe5e2B9bL8
+
+https://developer.android.com/ml?hl=pt-br

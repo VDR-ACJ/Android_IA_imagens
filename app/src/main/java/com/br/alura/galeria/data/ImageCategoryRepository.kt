@@ -10,9 +10,38 @@ class ImageCategoryRepository {
             foodsGroup,
             vehiclesGroup,
             animalsGroup,
-            musicGroup
+            musicGroup,
+            androidGroup,
+            comumMugGroup,
+            appleGroup,
+            aluraMugGroup
         )
     }
+
+    private val appleGroup = ImageCategory(
+        name = "Maça",
+        keyWords = listOf(
+            "Maça"
+        )
+    )
+    private val androidGroup = ImageCategory(
+        name = "Android",
+        keyWords = listOf(
+            "Android"
+        )
+    )
+    private val comumMugGroup = ImageCategory(
+        name = "Caneca comum",
+        keyWords = listOf(
+            "Caneca comum"
+        )
+    )
+    private val aluraMugGroup = ImageCategory(
+        name = "Caneca Alura",
+        keyWords = listOf(
+            "Caneca Alura"
+        )
+    )
 
 
     private val peoplesGroup = ImageCategory(
