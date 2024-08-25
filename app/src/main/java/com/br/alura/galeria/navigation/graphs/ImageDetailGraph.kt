@@ -45,23 +45,7 @@ fun NavGraphBuilder.imageDetailGraph() {
             onImageChange = {
                 currentImage = it
 
-                val image = InputImage.fromFilePath(context, it)
-                //ADD - 18 ago 2024
 
-
-                val labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
-
-                labeler.process(image).addOnSuccessListener { labels ->
-                    labels.forEach{
-                        val labelAndConfidence = "${it.text} - ${it.confidence}"
-                        Log.d("ImageDetailScreen", labelAndConfidence)
-
-                        //description = labels.toString()
-                        description = labels.map{it.text}.toString()
-
-                    }
-
-                }
             }
         )
     }
