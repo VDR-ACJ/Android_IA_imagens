@@ -1,0 +1,69 @@
+site para treinar modelos
+https://teachablemachine.withgoogle.com/train/image
+
+Analisando as imagens da pasta
+Na pasta selecionada, temos algumas imagens, como uma caneca da Alura. Ao analisar essa imagem, o aplicativo traz alguns rótulos em inglês, como "tableware, cup" (utensílio de mesa, xícara), sugerindo que é uma xícara de porcelana. No entanto, ao acessar a opção de IA, vemos que identifica um grupo de comidas, mas não há nada relacionado à nossa xícara.
+
+Isso ocorre porque o modelo atualmente disponível não tem informações para reconhecer especificamente essa xícara. Essa situação é comum ao trabalhar com bibliotecas de reconhecimento de imagem, onde muitas vezes é necessário treinar o modelo para reconhecer objetos específicos ou criar modelos personalizados para atender a necessidades específicas.
+
+Treinamento de modelos
+Na documentação do ML Kit, há uma seção de informações sobre modelos personalizados. São mencionadas algumas opções para baixar modelos pré-treinados, como para identificar carros ou certos tipos de animais. A documentação oferece várias opções que você pode explorar, incluindo modelos disponíveis para download e instalação, bem como a possibilidade de criar seus próprios modelos personalizados.
+
+Aprendendo a utilizar o Teachable Machine
+Além disso, existe a opção de treinar seus próprios modelos para uso com o ML Kit. Para isso, podemos acessar o site https://teachablemachine.withgoogle.com/, que é parte da rede da Google. Ele oferece uma maneira mais simples para quem não quer se aprofundar tanto no treinamento de modelos, permitindo treinar rapidamente e testar os modelos em seus aplicativos.
+
+É importante ressaltar que o campo de treinamento de modelos é bastante complexo e há cursos e formações disponíveis na Alura que tratam desses aspectos de forma mais aprofundada, incluindo como preparar os dados antes de alimentar os modelos. A abordagem da Google com o Teachable Machine é fornecer uma introdução mais simples e direta para que os usuários possam começar a entender o processo, e aprofundar conforme necessário dependendo da situação.
+
+Ao clicarmos no botão "Get Started", destacado em azul, seremos direcionados para uma tela com três opções para treinar imagens, áudios e poses. Optaremos pela seleção de "Image Project" e escolheremos o "Standard Image Model". Embora haja um breve tutorial sobre o uso do site, clicaremos no botão "X" para fechar essa apresentação. O próximo passo é definir categorias, que funcionarão como rótulos, e associar imagens de referência para estes rótulos.
+
+Por exemplo, vamos renomear o primeiro rótulo, atualmente denominado "Class 1", para "Android". Depois, clicaremos no botão "Upload". Vale ressaltar que há um conteúdo adicional disponível na Alura sobre Teachable Machine, explicando seu uso, incluindo a funcionalidade da webcam. No entanto, nosso foco será no processo de upload de imagens.
+
+Após clicarmos em "Upload", selecionaremos "Choose Images from your Files" para termos acesso às pastas armazenadas em nosso computador. Já organizamos as imagens necessárias na pasta "exemplo 2", dentro de "imagens de exemplo", conforme indicado nos materiais extras. Dentro dessa pasta, encontramos uma coleção de imagens do boneco do Android na pasta "android". Selecionaremos todas as imagens desta pasta e clicaremos em "Abrir". O sistema realizará o carregamento das imagens, permitindo que continuemos com a definição de outra categoria.
+
+Para a segunda classe, renomearemos "Class 2" como "Maça", por exemplo. Repetiremos o processo de upload, selecionando as imagens correspondentes à pasta "maça", também dentro de "exemplo 2". Selecionaremos todas as imagens e clicaremos em "Abrir". Depois, basta aguardar enquanto as imagens são carregadas. É possível que surja um breve tutorial sobre o treinamento do modelo, o qual é bastante intuitivo.
+
+Após o envio de várias imagens para as categorias "Android" e "Maça", podemos iniciar o processo de treinamento clicando em "Train Model" e aguardar sua conclusão. Quanto maior o número de imagens, melhor será o resultado do modelo e mais tempo será necessário para o treinamento. Neste caso, o processo foi relativamente rápido. Ao finalizar, o sistema oferece a opção de exportar o modelo, mas não faremos isso agora.
+
+Testando o modelo
+Uma funcionalidade interessante é a possibilidade de trocar o método de entrada de "Webcam" para "File". Assim como no exemplo anterior, podemos arrastar uma imagem para o campo designado e o sistema tentará identificar se ela pertence à categoria "Android" ou "Maça".
+
+Então, vamos alterar para "File" e selecionar uma imagem de teste da pasta "Imagens de Exemplo". Nesta pasta, além de outras subpastas, temos algumas imagens, dentre elas a imagem "teste-android.jpg". Vamos selecioná-la e clicar em "Abrir".
+
+Embora esta imagem especificamente não tenha sido previamente incluída no modelo, com base no treinamento anterior, o sistema atribuirá uma alta probabilidade de 100% à categoria "Android". Da mesma forma, ao testarmos a imagem "teste-caneca-e-maca.jpg", de uma maçã com uma xícara, a certeza de pertencer à categoria "Maça" é de 98%.
+
+Adicionando mais classes
+Vamos adicionar mais duas categorias, clicando em "Add a class". A primeira será "Caneca Comum" e nela selecionaremos todas as imagens da pasta "caneca comum", dentro de "exemplo 2".
+
+Depois, criaremos a classe "Caneca Alura" e selecionaremos as imagens da pasta "caneca preta". Após o envio das imagens, iniciaremos novamente o treinamento do modelo e aguardaremos sua conclusão.
+
+Testando novamente o modelo
+Após o treinamento do nosso modelo, podemos realizar mais um teste. Vamos alterar de "Webcam" para "File" e escolher a imagem "teste-caneca-alura-1.jpg". Ao analisar a imagem, o modelo atribui uma probabilidade de 84% para a categoria "Caneca Comum" em vez de "Caneca Alura". Isso ocorre devido à semelhança das imagens utilizadas no treinamento, as quais se assemelham mais à "Caneca Comum". No entanto, é importante notar que a cor da caneca Alura pode variar, tornando-a mais parecida com outros exemplos utilizados no treinamento.
+
+Apesar disso, nosso modelo está bem treinado e atende aos nossos requisitos. Existem opções avançadas disponíveis, como a possibilidade de retreinamento do modelo, adição ou remoção de imagens para aprimorar ainda mais seu desempenho. Quanto mais imagens semelhantes forem adicionadas, melhor será o resultado dos testes realizados.
+
+Exportando o modelo
+Ao clicarmos em "Export Model" e selecionarmos "TensorFlow Lite" com a opção Model Conversion Type configurada para "Quantized", o modelo será convertido e estará disponível para download. Este arquivo poderá ser utilizado posteriormente com o ML Kit, conforme exploraremos a seguir.
+
+Após o término da conversão, o modelo será baixado automaticamente. Vamos aprender como incorporar este arquivo em nosso aplicativo nas próximas etapas. Para mais informações sobre como utilizar este modelo, existem instruções detalhadas nesta página, embora nosso método de utilização possa diferir um pouco. Na sequência, entenderemos essas diferenças e aprenderemos como utilizar.
+
+
+
+
+Para criar os modelos customizados você precisa:
+
+Abrir o site Teachable Machine:
+Escolha a opção de imagens;
+Crie as 4 classes para cada categoria;
+Adicione imagens para cada categoria;
+Treine o modelo;
+Faça o download no formato específico.
+
+
+O Teachable Machine é um projeto da Google que visa facilitar ao máximo a criação e implantação de modelos de Machine Learning. Em aula, mencionamos algumas de suas funções, mas há outras que não foram abordadas. Ainda assim, é uma ferramenta mais simples e intuitiva de usar.
+
+Porém, existe todo uma área dentro do estudo de Machine Learning que envolve classificação e treinamento de modelos com ferramentas e códigos mais específicos. Isso inclui questões de refinamento para tornar os modelos mais precisos e eficazes.
+
+Aqui na Alura, temos uma formação de entrada sobre esses tópicos chamada Formação Machine Learning com Python: Classificação, e também uma formação mais avançada chamada Formação Machine Learning. E se você quiser aprender mais sobre o Teachable Machine, pode conferir também o Alura Mais Visão Computacional.
+
+========================================================
+
